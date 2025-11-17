@@ -49,3 +49,8 @@ jobs:
           name: terraform-plan
           path: tfplan.out
 
+      # 9) Apply the changes (only when workflow_dispatch is triggered)
+      - name: Terraform Apply
+        if: github.event_name == 'workflow_dispatch'
+        run: terraform apply -auto-approve tfplan.out
+

@@ -24,7 +24,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
+          aws-region: us-east-3
 
       # 4) Init Terraform (downloads providers + connects backend)
       - name: Terraform Init
@@ -44,7 +44,7 @@ jobs:
 
       # 8) Save the plan output as artifact (optional but good)
       - name: Upload Plan
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: terraform-plan
           path: tfplan.out

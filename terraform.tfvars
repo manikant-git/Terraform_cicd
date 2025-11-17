@@ -1,0 +1,5 @@
+ami = "ami-0cfde0ea8edd312d4"
+region = "us-east-2"
+environment = "prod"
+owner = "mani"
+project_name = "expense"

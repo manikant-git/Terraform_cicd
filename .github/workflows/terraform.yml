@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Get your code
+      # 1) Get our code
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -42,7 +42,7 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -out=tfplan.out
 
-      # 8) Save the plan output as artifact (optional but good)
+      # 8) Save the plan output as artifact 
       - name: Upload Plan
         uses: actions/upload-artifact@v4
         with:

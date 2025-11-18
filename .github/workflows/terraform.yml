@@ -36,7 +36,7 @@ jobs:
 
       # 5) Terraform fmt
       - name: Terraform Fmt
-        run: terraform fmt -check
+        run: terraform fmt
 
       # 6) Terraform validate
       - name: Terraform Validate

@@ -9,22 +9,25 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: write    # REQUIRED for OIDC
+      contents: read
+
     steps:
-      # 1) Get our code
+      # 1) Checkout Repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2) Setup Terraform CLI
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      # 3) Configure AWS credentials from GitHub Secrets
-      - name: Configure AWS credentials
+      # 2) Configure AWS credentials using OIDC
+      - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: arn:aws:iam::698251583579:role/GitHubActionsTerraformRole
           aws-region: us-east-2
+
+      # 3) Setup Terraform CLI
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
       # 4) Init Terraform (downloads providers + connects backend)
       - name: Terraform Init
@@ -32,25 +35,24 @@ jobs:
 
       # 5) Check formatting
       - name: Terraform Fmt
-        run: terraform fmt 
+        run: terraform fmt -check
 
       # 6) Validate configuration syntax
       - name: Terraform Validate
         run: terraform validate
 
-      # 7) Create a plan (preview)
+      # 7) Create plan file
       - name: Terraform Plan
         run: terraform plan -out=tfplan.out
 
-      # 8) Save the plan output as artifact 
+      # 8) Upload plan output as artifact
       - name: Upload Plan
         uses: actions/upload-artifact@v4
         with:
           name: terraform-plan
           path: tfplan.out
 
-      # 9) Apply the changes (only when workflow_dispatch is triggered)
+      # 9) Apply only on manual trigger
       - name: Terraform Apply
         if: github.event_name == 'workflow_dispatch'
         run: terraform apply -auto-approve tfplan.out
-
